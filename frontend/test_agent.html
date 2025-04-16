@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Agent Endpoint</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4a6fa5;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3a5982;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f5f7fa;
+            white-space: pre-wrap;
+        }
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f4f9;
+            border-radius: 4px;
+        }
+        .request {
+            color: #4a6fa5;
+        }
+        .response {
+            color: #29ab87;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Agent Endpoint</h1>
+    
+    <div class="form-group">
+        <label for="agent-url">API URL:</label>
+        <input type="text" id="agent-url" value="http://localhost:5000/api/agent">
+    </div>
+    
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" rows="3">Add a Chicken Tikka Roll for €6 under Fast Food, available for takeaway and delivery.</textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="merchant-id">Merchant ID:</label>
+        <select id="merchant-id">
+            <option value="1">1 - Main Store</option>
+            <option value="2">2 - Branch Location</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="session-id">Session ID (optional):</label>
+        <input type="text" id="session-id" placeholder="Leave empty to create new session">
+    </div>
+    
+    <button id="send-btn">Send Request</button>
+    <button id="clear-btn">Clear Log</button>
+    
+    <h2>Log</h2>
+    <div id="output"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sendBtn = document.getElementById('send-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const output = document.getElementById('output');
+            let sessionIdEl = document.getElementById('session-id');
+            
+            sendBtn.addEventListener('click', async () => {
+                const url = document.getElementById('agent-url').value;
+                const message = document.getElementById('message').value;
+                const merchantId = document.getElementById('merchant-id').value;
+                const sessionId = sessionIdEl.value;
+                
+                // Prepare request data
+                const requestData = {
+                    query: message,
+                    merchant_id: parseInt(merchantId)
+                };
+                
+                // Add session ID if provided
+                if (sessionId) {
+                    requestData.session_id = sessionId;
+                }
+                
+                // Log request
+                const requestLog = document.createElement('div');
+                requestLog.className = 'log-entry request';
+                requestLog.textContent = `Request to ${url}:\n${JSON.stringify(requestData, null, 2)}`;
+                output.appendChild(requestLog);
+                
+                try {
+                    // Send request
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData),
+                    });
+                    
+                    // Get response
+                    const data = await response.json();
+                    
+                    // Log response
+                    const responseLog = document.createElement('div');
+                    responseLog.className = 'log-entry response';
+                    responseLog.textContent = `Response (${response.status}):\n${JSON.stringify(data, null, 2)}`;
+                    output.appendChild(responseLog);
+                    
+                    // Update session ID if returned
+                    if (data.session_id) {
+                        sessionIdEl.value = data.session_id;
+                    }
+                    
+                } catch (error) {
+                    // Log error
+                    const errorLog = document.createElement('div');
+                    errorLog.className = 'log-entry error';
+                    errorLog.textContent = `Error: ${error.message}`;
+                    output.appendChild(errorLog);
+                }
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                output.innerHTML = '';
+            });
+        });
+    </script>
+</body>
+</html>
