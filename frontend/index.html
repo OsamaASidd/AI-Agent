@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synko POS AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <h1>Synko POS <span>AI</span></h1>
+            </div>
+        </header>
+
+        <main>
+            <div class="sidebar">
+                <div class="merchant-selector">
+                    <label for="merchant-select">Select Merchant:</label>
+                    <select id="merchant-select">
+                        <option value="1">Main Store</option>
+                        <option value="2">Branch Location</option>
+                    </select>
+                </div>
+                <div class="example-queries">
+                    <h3>Example Queries</h3>
+                    <ul>
+                        <li><button class="example-query-btn">What is the most selling item?</button></li>
+                        <li><button class="example-query-btn">Who is the best performing employee?</button></li>
+                        <li><button class="example-query-btn">Show sales by category</button></li>
+                        <li><button class="example-query-btn">What are the peak sales hours?</button></li>
+                        <li><button class="example-query-btn">Which menu items have the highest profit margin?</button></li>
+                        <li><button class="example-query-btn">What is the most selling item?</button></li>
+                        <li><button class="example-query-btn">Add a Chicken Tikka Roll for €6 under Fast Food menu item, available for takeaway and delivery.</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message system">
+                            <div class="message-content">
+                                <p>Hi! I'm your AI visualization assistant. Ask me questions about your POS data, and I'll create charts, provide insights & perform tasks.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="query-input">
+                        <input type="text" id="query-input" placeholder="Ask me about your POS data...">
+                        <button id="send-query-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Synko POS AI Visualizer</p>
+        </footer>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Analyzing your data...</p>
+    </div>
+
+    <!-- Templates -->
+    <template id="user-message-template">
+        <div class="message user">
+            <div class="message-content">
+                <p></p>
+            </div>
+        </div>
+    </template>
+
+    <template id="ai-message-template">
+        <div class="message ai">
+            <div class="message-content">
+                <p class="insights"></p>
+                <div class="visualization">
+                    <img src="" alt="Data Visualization">
+                </div>
+                <div class="sql-container">
+                    <details>
+                        <summary>View SQL Query</summary>
+                        <pre class="sql-query"></pre>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
